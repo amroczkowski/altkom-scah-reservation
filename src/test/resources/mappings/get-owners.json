@@ -1,0 +1,21 @@
+{
+  "request": {
+    "urlPath": "/owner",
+    "method": "GET"
+  },
+
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "id": 819,
+        "firstName": "Jan",
+        "lastName": "Kowalski",
+        "phone": "48555444333"
+      }
+    ]
+  }
+}
