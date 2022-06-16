@@ -1,0 +1,38 @@
+POST http://localhost:8200/owner
+Content-Type: application/json
+
+{
+  "firstName": "Jan",
+  "lastName": "Kowalski",
+  "phone": "48555555555"
+}
+
+###
+
+POST http://localhost:8100/dog
+Content-Type: application/json
+
+{
+  "name": "Joga",
+  "dateOfBirth": "2016-06-01",
+  "breed": "Labrador",
+  "ownerId": 1
+}
+
+###
+
+POST http://localhost:8300/reservation
+Content-Type: application/json
+
+{
+  "startDate": "2022-09-10",
+  "days": 10,
+  "ownerId": 1,
+  "dogId": 1
+}
+
+###
+
+GET http://localhost:8300/reservation/1
+
+###

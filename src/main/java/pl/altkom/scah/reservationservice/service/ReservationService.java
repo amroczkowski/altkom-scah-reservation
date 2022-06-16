@@ -22,11 +22,13 @@ import pl.altkom.scah.reservationservice.repository.ReservationRepository;
 @Service
 public class ReservationService {
 
+    private final OwnerClient ownerClient;
+    private final DogClient dogClient;
     private final ReservationRepository reservationRepository;
 
     public List<Reservation> getReservations() {
-        final List<Owner> owners = null; // Get owners
-        final List<Dog> dogs = null; // Get owners
+        final List<Owner> owners = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper.mapOwners(ownerClient.getOwners());
+        final List<Dog> dogs = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper.mapDogs(dogClient.getDogs());
         return ResponseMapper.map(reservationRepository.findAll(), owners, dogs);
     }
 
@@ -35,8 +37,10 @@ public class ReservationService {
                 .findById(reservationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        final Owner owner = null; // Get owner
-        final Dog dog = null; // Get dog
+        final Owner owner = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper
+                .map(ownerClient.getOwner(reservation.getOwnerId()));
+        final Dog dog = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper
+                .map(dogClient.getDog(reservation.getDogId()));
 
         return ResponseMapper.map(reservation, owner, dog);
     }
@@ -45,8 +49,10 @@ public class ReservationService {
         final pl.altkom.scah.reservationservice.repository.model.Reservation savedReservation = reservationRepository
                 .save(RequestMapper.bind(request));
 
-        final Owner owner = null; // Get owner
-        final Dog dog = null; // Get dog
+        final Owner owner = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper
+                .map(ownerClient.getOwner(savedReservation.getOwnerId()));
+        final Dog dog = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper
+                .map(dogClient.getDog(savedReservation.getDogId()));
 
         return ResponseMapper.map(savedReservation, owner, dog);
     }
@@ -59,8 +65,10 @@ public class ReservationService {
 
         final pl.altkom.scah.reservationservice.repository.model.Reservation modifiedReservation = reservationRepository
                 .save(RequestMapper.bind(request, sourceReservation));
-        final Owner owner = null; // Get owner
-        final Dog dog = null; // Get dog
+        final Owner owner = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper
+                .map(ownerClient.getOwner(modifiedReservation.getOwnerId()));
+        final Dog dog = pl.altkom.scah.reservationservice.client.mapper.ResponseMapper
+                .map(dogClient.getDog(modifiedReservation.getDogId()));
 
         return ResponseMapper.map(modifiedReservation, owner, dog);
     }
