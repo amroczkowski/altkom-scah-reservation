@@ -21,6 +21,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:8200/owner/1
+
+###
+
 POST http://localhost:8300/reservation
 Content-Type: application/json
 

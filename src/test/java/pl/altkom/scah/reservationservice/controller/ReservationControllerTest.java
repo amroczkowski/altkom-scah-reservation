@@ -11,7 +11,10 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,7 +27,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.Options;
 
 import pl.altkom.scah.reservationservice.controller.model.CreateReservationRequest;
 import pl.altkom.scah.reservationservice.controller.model.Reservation;
@@ -32,12 +34,22 @@ import pl.altkom.scah.reservationservice.controller.model.UpdateReservationReque
 
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = Options.DYNAMIC_PORT)
+@AutoConfigureWireMock(port = ReservationControllerTest.PORT)
 @AutoConfigureMockMvc
 class ReservationControllerTest {
 
+    final static int PORT = 9875;
     @Autowired
     private MockMvc mockMvc;
+
+    @TestConfiguration
+    public static class TestConfig {
+
+        @Bean
+        public ServiceInstanceListSupplier serviceInstanceListSupplier() {
+            return new TestServiceInstanceListSupplier("service", ReservationControllerTest.PORT);
+        }
+    }
 
     @BeforeEach
     void init() {
