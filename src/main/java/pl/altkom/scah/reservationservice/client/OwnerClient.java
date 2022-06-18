@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import pl.altkom.scah.reservationservice.client.model.Owner;
 
-@FeignClient(value = "ownerClient", url = "${pl.altkom.scah.owner-service.url}")
+@FeignClient(value = "OWNER-SERVICE")
 public interface OwnerClient {
 
     @GetMapping("/owner/{ownerId}")
