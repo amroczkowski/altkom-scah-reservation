@@ -1,19 +1,41 @@
 package pl.altkom.scah.reservationservice.client;
 
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import pl.altkom.scah.reservationservice.client.model.Owner;
+import pl.altkom.scah.reservationservice.configuration.ClientsConfiguration;
 
-@FeignClient(value = "ownerClient", url = "${pl.altkom.scah.owner-service.url}")
-public interface OwnerClient {
+@Component
+public class OwnerClient {
 
-    @GetMapping("/owner/{ownerId}")
-    Owner getOwner(@PathVariable("ownerId") final Long ownerId);
+    private final WebClient client;
 
-    @GetMapping("/owner")
-    List<Owner> getOwners();
+    public OwnerClient(final ClientsConfiguration clientsConfiguration) {
+        this.client = WebClient.builder()
+                .baseUrl(clientsConfiguration.getOwnerService().getUrl())
+                .build();
+    }
+
+    public Owner getOwner(final Long ownerId) {
+        return client
+                .get()
+                .uri("/owner/{ownerId}", Map.of("ownerId", ownerId))
+                .retrieve()
+                .bodyToMono(Owner.class)
+                .block();
+    }
+
+    public List<Owner> getOwners() {
+        return client
+                .get()
+                .uri("/onwer", Map.of())
+                .retrieve()
+                .bodyToFlux(Owner.class)
+                .collectList()
+                .block();
+    }
 }
